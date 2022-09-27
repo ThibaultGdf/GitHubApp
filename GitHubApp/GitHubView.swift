@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct GitHubModel : Codable {
+struct GitHubModel : Decodable {
     
     var name : String
     var avatarUrl : String
@@ -17,9 +17,9 @@ struct GitHubModel : Codable {
 }
 
 
-func getGitHubModel(completion:@escaping (GitHubModel) -> ()) {
+func getGitHubModel(name: String, completion:@escaping (GitHubModel) -> ()) {
     
-    guard let url = URL(string: "https://api.github.com/users/ThibaultGdf")
+    guard let url = URL(string: "https://api.github.com/users/\(name)")
     else {
         fatalError("Le serveur est indisponible ou l'url est invalide")
     }
@@ -35,7 +35,9 @@ func getGitHubModel(completion:@escaping (GitHubModel) -> ()) {
             return
         }
         do {
-            let informations = try JSONDecoder().decode(GitHubModel.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let informations = try decoder.decode(GitHubModel.self, from: data)
             DispatchQueue.main.async {
                 completion(informations)
             }

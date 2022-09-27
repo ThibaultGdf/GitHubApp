@@ -8,34 +8,55 @@
 import SwiftUI
 
 struct GitHubDetail: View {
-    var githubmodel: GitHubModel
-    @State var name : String = ""
+    @State var githubmodel: GitHubModel = GitHubModel(name: "", avatarUrl: "", followers: 0, following: 0)
+    @State var username : String = ""
     var body: some View {
         
         NavigationView{
             VStack{
                 Form {
-                    Section(header: Text("USERNAME")) {
-                        TextField("Search an username", text: $name)
-                    }
-                    Section(header: Text("USERNAME")) {
+                    
+                    HStack {
                         
+                            TextField("GitHub Username ", text: $username)
                         
-                        Text(githubmodel.name)
-                            .fontWeight(.semibold)
+                        Button {
+                            
+                            getGitHubModel(name: username) { user in
+                                self.githubmodel = user
+                            }
+                            
+                        } label: {
+                            Text("Search")
+                            
+                        }
                     }
                     
-                    Text(githubmodel.avatarUrl)
-                        .fontWeight(.semibold)
                     
-                    Section(header: Text("Followers")) {
-                        Text(" \(githubmodel.followers)")
+                        if !githubmodel.name.isEmpty {
+                            
+                            Section(header: Text("USERNAME")) {
+                
+                            Text(githubmodel.name)
+                                .fontWeight(.semibold)
+                        }
+                   
+                        AsyncImage(url: URL(string: githubmodel.avatarUrl))
+                        .frame(width: 400, height: 300)
+                        .padding(-20)
+                        
+                            
+                        
+                        Section(header: Text("Followers")) {
+                            Text(" \(githubmodel.followers)")
+                            
+                        }
+                        Section(header: Text("Following")) {
+                            Text("\(githubmodel.following)")
+                            
                         
                     }
-                    Section(header: Text("Following")) {
-                        Text("\(githubmodel.following)")
-                        
-                    }
+                } //Form
                 }
             }.navigationTitle("GitHub")
                 .navigationBarTitleDisplayMode(.inline)
@@ -45,6 +66,6 @@ struct GitHubDetail: View {
 
 struct GitHubDetail_Previews: PreviewProvider {
     static var previews: some View {
-        GitHubDetail(githubmodel: GitHubModel(name: "username", avatarUrl: "Image", followers: 30, following: 20))
+        GitHubDetail()
     }
 }
