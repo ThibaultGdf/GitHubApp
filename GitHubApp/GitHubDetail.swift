@@ -16,7 +16,7 @@ struct GitHubDetail: View {
             VStack{
                 Form {
                     Section(header: Text("USERNAME")) {
-                        TextField("Enter your name", text: $name)
+                        TextField("Search an username", text: $name)
                     }
                     Section(header: Text("USERNAME")) {
                         
