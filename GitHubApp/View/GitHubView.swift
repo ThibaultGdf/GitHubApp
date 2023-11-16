@@ -8,24 +8,24 @@
 import SwiftUI
 
 // MARK: - GitHubDetail
-struct GitHubDetail: View {
+
+struct GitHubView: View {
     // MARK: Properties
     
-    @State private var github: GitHub = GitHub(name: "", avatarUrl: "", followers: 0, following: 0)
-    @State private var username : String = ""
-    
     @StateObject var viewModel = GitHubViewModel(gitHubRepository: GitHubRepository())
-    
+    @State private var github: GitHub = GitHub(name: "", avatarUrl: "", followers: 0, following: 0)
+
+    // MARK: Body
     var body: some View {
         NavigationView {
             VStack {
                 Form {
                     HStack {
-                        TextField("GitHub Username ", text: $username)
+                        TextField("GitHub Username", text: $viewModel.username)
                         Button {
-                            viewModel.gitHubRepository.getGitHubModel(name: username) { user in
-                                self.github = user
-                            }
+//                            viewModel.getGitHub(username: viewModel.username) { user in
+//                                self.github = user
+//                            }
                         } label: {
                             Text("Search")
                         }
@@ -55,6 +55,6 @@ struct GitHubDetail: View {
 
 struct GitHubDetail_Previews: PreviewProvider {
     static var previews: some View {
-        GitHubDetail()
+        GitHubView()
     }
 }

@@ -8,39 +8,30 @@
 import SwiftUI
 
 // MARK: - GitHubRepository
+
 class GitHubRepository {
     
-    func getGitHubModel(name: String, completion:@escaping (GitHub) -> ()) {
-        
+    func fetchGitHub(name: String) async throws -> GitHub {
         guard let url = URL(string: "https://api.github.com/users/\(name)")
         else {
-            fatalError("Le serveur est indisponible ou l'url est invalide")
+            fatalError("Missing URL")
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard let data = data, error == nil else {
-                DispatchQueue.main.async {
-                    fatalError("No data response")
-                    
-                }
-                return
-            }
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let informations = try decoder.decode(GitHub.self, from: data)
-                DispatchQueue.main.async {
-                    completion(informations)
-                }
-            }
-            catch {
-                print("Success get item: \(error)")
-            }
-        }.resume()
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+        guard (response as? HTTPURLResponse)?.statusCode == 200
+        else {
+            fatalError("Error while fetching data")
+        }
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let informations = try decoder.decode(GitHub.self, from: data)
+            return informations
+        }
+        catch {
+            print("Success get item: \(error)")
+            throw error
+        }
     }
 }
-
-
-
