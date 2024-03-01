@@ -20,6 +20,7 @@ class GitHubViewModel: ObservableObject {
 	 - Parameters:
 	 - username : Pseudo de l'utilisateur GitHub
 	 */
+	@MainActor
 	func getGitHub(username: String) {
 		Task {
 			do {
